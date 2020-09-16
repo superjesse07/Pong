@@ -129,7 +129,6 @@ namespace Pong2
                 go.Update(deltaTime);
                 if(go is Paddle)
                 {
-                    go.position.Y = ball.position.Y;
                     var bounds = go.GetBounds();
                     if(ballBounds.Intersects(bounds))
                     {
