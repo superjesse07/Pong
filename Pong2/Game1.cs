@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 
@@ -29,6 +30,8 @@ namespace Pong2
         int pointsRight;
         SpriteFont arialFont;
         const float scoreOffset=50;
+        SoundEffect hitsfx,dingsfx;
+        
 
 
         public Game1()
@@ -85,6 +88,8 @@ namespace Pong2
             var player1Texture = Content.Load<Texture2D>("rodeSpeler");
             var player2Texture = Content.Load<Texture2D>("blauweSpeler");
             arialFont = Content.Load<SpriteFont>("Arial");
+            hitsfx = Content.Load<SoundEffect>("hitsfx");
+            dingsfx = Content.Load<SoundEffect>("dingsfx");
             // Creating the game objects
 
             ball = new Ball(this, ballTexture, windowSize / 2f, new Vector2(1, 0), initialBallSpeed);
@@ -152,6 +157,7 @@ namespace Pong2
                             ball.OnCollide(go);
                             screenShakeDuration = 0.2f;
                             screenShakeIntensity = ball.speed/20f;
+                            hitsfx.CreateInstance().Play();
                             Console.WriteLine(ball.position);
                             Console.WriteLine(go.position);
                         }
@@ -195,6 +201,8 @@ namespace Pong2
 
         public void PointScored(bool rightSide)
         {
+            dingsfx.CreateInstance().Play();
+
             screenShakeDuration = 0.5f;
             screenShakeIntensity = 20;
             Reset();

@@ -56,3 +56,15 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
+#begin hitsfx.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:hitsfx.wav
+
+#begin dingsfx.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:dingsfx.wav
+
