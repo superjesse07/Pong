@@ -7,6 +7,7 @@ namespace Pong2
 {
     public class Ball : GameObject
     {
+        // aanpassing
         public Vector2 direction; // the direction of the ball
         public float speed; // the speed of the ball
         const float maxSpeed = 650; // after years of experimentation this seemed to be a nice value
