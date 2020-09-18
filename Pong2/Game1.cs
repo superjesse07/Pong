@@ -158,8 +158,6 @@ namespace Pong2
                             screenShakeDuration = 0.2f;
                             screenShakeIntensity = ball.speed/20f;
                             hitsfx.CreateInstance().Play();
-                            Console.WriteLine(ball.position);
-                            Console.WriteLine(go.position);
                         }
                     }
                 }
