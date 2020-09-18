@@ -14,10 +14,11 @@ namespace Pong2
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Color background;
+        Color text;
         List<GameObject> gameObjects = new List<GameObject>();
         public static Vector2 windowSize;
         public Ball ball;
-        const float initialPlayerSpeed= 600, initialBallSpeed=200;
+        const float initialPlayerSpeed = 400, initialBallSpeed = 200;
 
         Vector3 screenOffset;
         Random rand = new Random();
@@ -26,6 +27,8 @@ namespace Pong2
         const float screenShakeFalloff = 0.4f;
         int pointsLeft;
         int pointsRight;
+        SpriteFont arialFont;
+        const float scoreOffset=50;
 
 
         public Game1()
@@ -54,12 +57,14 @@ namespace Pong2
 
         public void Reset()
         {
-            //ball.direction = new Vector2(1, 1);
+            Console.WriteLine(ball.direction);
+            ball.direction *= new Vector2(1, 0);
+            Console.WriteLine(ball.direction);
             ball.speed = initialBallSpeed;
             ball.position = windowSize / 2f;
-            foreach(GameObject go in gameObjects)
+            foreach (GameObject go in gameObjects)
             {
-                if(go is Paddle)
+                if (go is Paddle)
                 {
                     go.position.Y = windowSize.Y / 2f;
                 }
@@ -79,16 +84,16 @@ namespace Pong2
             var ballTexture = Content.Load<Texture2D>("bal");
             var player1Texture = Content.Load<Texture2D>("rodeSpeler");
             var player2Texture = Content.Load<Texture2D>("blauweSpeler");
-
+            arialFont = Content.Load<SpriteFont>("Arial");
             // Creating the game objects
-            
-            ball = new Ball(this,ballTexture,windowSize/2f,new Vector2(1,1),initialBallSpeed);
+
+            ball = new Ball(this, ballTexture, windowSize / 2f, new Vector2(1, 0), initialBallSpeed);
 
 
             gameObjects.Add(ball);
-            Paddle player1 = new Paddle(player1Texture, new Vector2(player1Texture.Width / 2f,windowSize.Y / 2f),initialPlayerSpeed, Keys.W,Keys.S);
+            Paddle player1 = new Paddle(player1Texture, new Vector2(player1Texture.Width / 2f, windowSize.Y / 2f), initialPlayerSpeed, Keys.W, Keys.S);
             gameObjects.Add(player1);
-            Paddle player2 = new Paddle(player2Texture, new Vector2(windowSize.X - player2Texture.Width / 2f, windowSize.Y / 2f),initialPlayerSpeed,Keys.Up,Keys.Down);
+            Paddle player2 = new Paddle(player2Texture, new Vector2(windowSize.X - player2Texture.Width / 2f, windowSize.Y / 2f), initialPlayerSpeed, Keys.Up, Keys.Down);
             gameObjects.Add(player2);
         }
 
@@ -98,7 +103,7 @@ namespace Pong2
         /// </summary>
         protected override void UnloadContent()
         {
-            
+
         }
 
         /// <summary>
@@ -107,14 +112,15 @@ namespace Pong2
         /// <param name="time">time value in seconds</param>
         /// <param name="speed"></param>
         /// <returns></returns>
-        Color GetRainbowColor(double time,double speed)
+        Color GetRainbowColor(double time, double speed)
         {
-            double value = time *speed;
+
+            double value = time * speed;
             double TAU = Math.PI * 2;
 
-            float redComponent = (float)Math.Abs(Math.Sin(value* TAU));
+            float redComponent = (float)Math.Abs(Math.Sin(value * TAU));
             float greenComponent = (float)Math.Abs(Math.Sin(value * TAU + TAU / 3));
-            float blueComponent = (float)Math.Abs(Math.Sin(value  * TAU + TAU * 2 / 3));
+            float blueComponent = (float)Math.Abs(Math.Sin(value * TAU + TAU * 2 / 3));
             return new Color(redComponent, greenComponent, blueComponent);
         }
 
@@ -130,32 +136,35 @@ namespace Pong2
                 Exit();
 
             /// 3 offset sin waves for RGB values
-            background = GetRainbowColor(gameTime.TotalGameTime.TotalSeconds, 0.25);
-            Rectangle ballBounds = ball.GetBounds();
-            foreach(GameObject go in gameObjects)
+            background = GetRainbowColor(gameTime.TotalGameTime.TotalSeconds, ball.speed/800d);
+            text = GetRainbowColor(gameTime.TotalGameTime.TotalSeconds + 0.5, ball.speed/800d);
+            foreach (GameObject go in gameObjects)
             {
                 go.Update(deltaTime);
-                if(go is Paddle)
+                if (go is Paddle)
                 {
+                    Rectangle ballBounds = ball.GetBounds();
                     var bounds = go.GetBounds();
-                    if(ballBounds.Intersects(bounds))
+                    if (ballBounds.Intersects(bounds))
                     {
-                        if((go.position - ball.position).X * ball.direction.X > 0)
+                        if ((go.position - ball.position).X * ball.direction.X > 0)
                         {
-                            ball.OnCollide();
+                            ball.OnCollide(go);
                             screenShakeDuration = 0.2f;
-                            screenShakeIntensity = 10;
+                            screenShakeIntensity = ball.speed/20f;
+                            Console.WriteLine(ball.position);
+                            Console.WriteLine(go.position);
                         }
                     }
                 }
             }
 
-            if(screenShakeDuration > 0)
+            if (screenShakeDuration > 0)
             {
                 screenShakeDuration -= deltaTime;
                 double angle = rand.NextDouble();
-                double length = rand.NextDouble() * screenShakeIntensity * (Math.Min(screenShakeDuration, screenShakeFalloff)/screenShakeFalloff);
-                screenOffset = new Vector3((float)(Math.Cos(angle * Math.PI * 2)*length), (float)(Math.Sin(angle * Math.PI * 2) * length), 0);
+                double length = rand.NextDouble() * screenShakeIntensity * (Math.Min(screenShakeDuration, screenShakeFalloff) / screenShakeFalloff);
+                screenOffset = new Vector3((float)(Math.Cos(angle * Math.PI * 2) * length), (float)(Math.Sin(angle * Math.PI * 2) * length), 0);
             }
 
 
@@ -171,15 +180,19 @@ namespace Pong2
             GraphicsDevice.Clear(background);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Matrix.CreateTranslation(screenOffset));
-            foreach(GameObject go in gameObjects)
+            foreach (GameObject go in gameObjects)
             {
                 go.Draw(spriteBatch);
             }
+
+            spriteBatch.DrawString(arialFont, pointsLeft.ToString(), new Vector2(scoreOffset,scoreOffset), text, 0, arialFont.MeasureString(pointsLeft.ToString()) / 2f, 1, SpriteEffects.None, 0);
+            spriteBatch.DrawString(arialFont, pointsRight.ToString(), new Vector2(windowSize.X- scoreOffset, scoreOffset), text, 0, arialFont.MeasureString(pointsRight.ToString()) / 2f, 1, SpriteEffects.None, 0);
+
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
-    
+
         public void PointScored(bool rightSide)
         {
             screenShakeDuration = 0.5f;
@@ -187,13 +200,13 @@ namespace Pong2
             Reset();
             if (rightSide)
             {
-                pointsLeft ++;
+                pointsLeft++;
             }
             else
             {
-                pointsRight ++;
+                pointsRight++;
             }
         }
-    
+
     }
 }

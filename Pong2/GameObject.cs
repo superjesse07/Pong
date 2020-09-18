@@ -6,7 +6,7 @@ namespace Pong2
 {
     public abstract class GameObject
     {
-        protected Texture2D texture;
+        public Texture2D texture;
         public Vector2 position;
 
         public GameObject(Texture2D texture, Vector2 position)

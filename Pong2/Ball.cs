@@ -39,9 +39,12 @@ namespace Pong2
             }
         }
 
-        public void OnCollide()
+        public void OnCollide(GameObject collider)
         {
-            direction *= new Vector2(-1, 1);
+            
+            direction *= new Vector2(-1, 0);
+            direction += new Vector2(0, 3 * (float)Math.Sin(.5 * Math.PI * ((position.Y - collider.position.Y) / (texture.Height + collider.texture.Height) / 2.0)));
+            direction.Normalize();
             speed += speedGrowth * (1 - speed /maxSpeed);
         }
     }
