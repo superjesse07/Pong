@@ -46,7 +46,7 @@ namespace Pong2
 
         public void Reset()
         {
-            ball.direction = new Vector2(1, 1);
+            //ball.direction = new Vector2(1, 1);
             ball.speed = initialBallSpeed;
             ball.position = windowSize / 2f;
             foreach(GameObject go in gameObjects)
