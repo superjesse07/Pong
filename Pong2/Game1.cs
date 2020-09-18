@@ -27,6 +27,7 @@ namespace Pong2
         int pointsLeft;
         int pointsRight;
 
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
