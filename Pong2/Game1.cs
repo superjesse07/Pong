@@ -24,6 +24,8 @@ namespace Pong2
         float screenShakeDuration = 0;
         float screenShakeIntensity = 0;
         const float screenShakeFalloff = 0.4f;
+        int pointsLeft;
+        int pointsRight;
 
         public Game1()
         {
@@ -43,6 +45,11 @@ namespace Pong2
             base.Initialize();
         }
 
+        public void ResetScore()
+        {
+            pointsLeft = 0;
+            pointsRight = 0;
+        }
 
         public void Reset()
         {
@@ -177,6 +184,14 @@ namespace Pong2
             screenShakeDuration = 0.5f;
             screenShakeIntensity = 20;
             Reset();
+            if (rightSide)
+            {
+                pointsLeft ++;
+            }
+            else
+            {
+                pointsRight ++;
+            }
         }
     
     }
