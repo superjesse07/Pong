@@ -25,6 +25,7 @@ namespace Pong2
         float screenShakeIntensity = 0;
         const float screenShakeFalloff = 0.4f;
 
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
