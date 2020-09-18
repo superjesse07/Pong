@@ -60,9 +60,7 @@ namespace Pong2
 
         public void Reset()
         {
-            Console.WriteLine(ball.direction);
             ball.direction *= new Vector2(1, 0);
-            Console.WriteLine(ball.direction);
             ball.speed = initialBallSpeed;
             ball.position = windowSize / 2f;
             foreach (GameObject go in gameObjects)
@@ -84,9 +82,9 @@ namespace Pong2
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Storing the textures in variables
-            var ballTexture = Content.Load<Texture2D>("bal");
-            var player1Texture = Content.Load<Texture2D>("rodeSpeler");
-            var player2Texture = Content.Load<Texture2D>("blauweSpeler");
+            Texture2D ballTexture = Content.Load<Texture2D>("bal");
+            Texture2D player1Texture = Content.Load<Texture2D>("rodeSpeler");
+            Texture2D player2Texture = Content.Load<Texture2D>("blauweSpeler");
             arialFont = Content.Load<SpriteFont>("Arial");
             hitsfx = Content.Load<SoundEffect>("hitsfx");
             dingsfx = Content.Load<SoundEffect>("dingsfx");
@@ -149,7 +147,7 @@ namespace Pong2
                 if (go is Paddle)
                 {
                     Rectangle ballBounds = ball.GetBounds();
-                    var bounds = go.GetBounds();
+                    Rectangle bounds = go.GetBounds();
                     if (ballBounds.Intersects(bounds))
                     {
                         if ((go.position - ball.position).X * ball.direction.X > 0)
